@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>برنامه مدیریت نام‌ها</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        .app-wrapper {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .container {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 25px 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 12px;
+        }
+        
+        .input-section {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        input, textarea {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        input:focus, textarea:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .search-section {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .names-section {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: #3498db;
+        }
+        
+        .names-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+        }
+        
+        .name-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .name-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .name-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background-color: #3498db;
+        }
+        
+        .name-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            word-break: break-word;
+        }
+        
+        .card-buttons {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .details-btn {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 8px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.3s;
+            flex: 1;
+        }
+        
+        .details-btn:hover {
+            background-color: #27ae60;
+        }
+        
+        .edit-btn {
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 8px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.3s;
+            flex: 1;
+        }
+        
+        .edit-btn:hover {
+            background-color: #d68910;
+        }
+        
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 8px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.3s;
+            flex: 1;
+        }
+        
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+            padding: 20px;
+            grid-column: 1 / -1;
+        }
+        
+        /* صفحه جزئیات */
+        .details-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            z-index: 1000;
+            padding: 15px;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        
+        .details-wrapper {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .details-container {
+            width: 100%;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 25px 20px;
+            box-sizing: border-box;
+        }
+        
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .details-title {
+            font-size: 1.6rem;
+            color: #2c3e50;
+        }
+        
+        .back-btn {
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .details-form {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .details-list {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .detail-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .detail-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            word-break: break-word;
+        }
+        
+        .detail-content {
+            font-size: 14px;
+            color: #7f8c8d;
+            white-space: pre-line;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            word-break: break-word;
+        }
+        
+        .detail-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .copy-btn {
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 8px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background-color: #8e44ad;
+        }
+        
+        .detail-edit {
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 8px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.3s;
+        }
+        
+        .detail-edit:hover {
+            background-color: #d68910;
+        }
+        
+        .detail-delete {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 8px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.3s;
+        }
+        
+        .detail-delete:hover {
+            background-color: #c0392b;
+        }
+        
+        /* حالت ویرایش */
+        .edit-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .edit-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            resize: vertical;
+            min-height: 100px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .save-btn {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 8px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        
+        .save-btn:hover {
+            background-color: #27ae60;
+        }
+        
+        .cancel-btn {
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 8px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        
+        .cancel-btn:hover {
+            background-color: #7f8c8d;
+        }
+        
+        /* دکمه‌های Import/Export */
+        .data-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .export-btn {
+            background-color: #2ecc71;
+        }
+        
+        .export-btn:hover {
+            background-color: #27ae60;
+        }
+        
+        .import-btn {
+            background-color: #9b59b6;
+        }
+        
+        .import-btn:hover {
+            background-color: #8e44ad;
+        }
+        
+        /* Modal برای Import/Export */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        .modal-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .modal-message {
+            font-size: 1rem;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            word-break: break-word;
+        }
+        
+        .modal-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            resize: vertical;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .modal-confirm {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            flex: 1;
+        }
+        
+        .modal-confirm:hover {
+            background-color: #27ae60;
+        }
+        
+        .modal-cancel {
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            flex: 1;
+        }
+        
+        .modal-cancel:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .modal-copy {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            flex: 1;
+        }
+        
+        .modal-copy:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            left: 20px;
+            background-color: #2ecc71;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            z-index: 3000;
+            opacity: 0;
+            transition: opacity 0.3s;
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        
+        .toast.error {
+            background-color: #e74c3c;
+        }
+        
+        /* بهبودهای واکنش‌گرایی برای موبایل */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container, .details-container {
+                padding: 20px 15px;
+                border-radius: 12px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+                margin-bottom: 15px;
+            }
+            
+            .input-section, .search-section, .names-section, .details-form, .details-list {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .names-container {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .name-card {
+                padding: 12px;
+            }
+            
+            .details-container {
+                padding: 20px 15px;
+            }
+            
+            .details-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .details-title {
+                font-size: 1.4rem;
+            }
+            
+            .section-title {
+                font-size: 1.2rem;
+            }
+            
+            .data-actions {
+                flex-direction: column;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .modal-buttons, .card-buttons, .detail-buttons, .edit-buttons {
+                flex-direction: column;
+            }
+            
+            .toast {
+                right: 10px;
+                left: 10px;
+                bottom: 10px;
+                max-width: none;
+            }
+        }
+        
+        @media (max-width: 350px) {
+            .container, .details-container {
+                padding: 15px 10px;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            .details-title {
+                font-size: 1.2rem;
+            }
+            
+            button {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+    <link rel="icon" href="favicon.png" />
+</head>
+<body>
+    <!-- صفحه اصلی -->
+    <div class="app-wrapper">
+        <div class="container" id="mainPage">
+            <h1>برنامه مدیریت نام‌ها</h1>
+            
+            <div class="search-section">
+                <h2 class="section-title">جستجو در نام‌ها</h2>
+                <input type="text" id="searchInput" placeholder="جستجو در نام‌های ذخیره شده...">
+            </div>
+            
+            <div class="names-section">
+                <h2 class="section-title">نام‌های ذخیره شده</h2>
+                <div class="names-container" id="namesContainer">
+                    <!-- نام‌ها در اینجا نمایش داده می‌شوند -->
+                </div>
+            </div>
+
+            <div class="input-section">
+                <h2 class="section-title">افزودن نام جدید</h2>
+                <div class="input-group">
+                    <input type="text" id="nameInput" placeholder="نام را وارد کنید...">
+                    <button id="addBtn">ذخیره نام</button>
+                </div>
+            </div>
+            
+            <div class="data-actions">
+                <button class="export-btn" id="exportBtn">خروجی گرفتن (Export)</button>
+                <button class="import-btn" id="importBtn">ورودی دادن (Import)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحه جزئیات -->
+    <div class="details-page" id="detailsPage">
+        <div class="details-wrapper">
+            <div class="details-container">
+                <div class="details-header">
+                    <h2 class="details-title" id="detailsTitle">جزئیات نام</h2>
+                    <button class="back-btn" id="backBtn">بازگشت به صفحه اصلی</button>
+                </div>
+                
+                <div class="details-form">
+                    <h3 class="section-title">افزودن جزئیات جدید</h3>
+                    <div class="form-group">
+                        <label for="detailTitle">عنوان جزئیات:</label>
+                        <input type="text" id="detailTitle" placeholder="عنوان جزئیات را وارد کنید...">
+                    </div>
+                    <div class="form-group">
+                        <label for="detailContent">محتوا:</label>
+                        <textarea id="detailContent" rows="5" placeholder="محتوا را وارد کنید... (می‌توانید از خطوط جدید برای پاراگراف‌بندی استفاده کنید)"></textarea>
+                    </div>
+                    <button id="addDetailBtn">افزودن جزئیات</button>
+                </div>
+                
+                <div class="details-list">
+                    <h3 class="section-title">جزئیات موجود</h3>
+                    <div id="detailsList">
+                        <!-- جزئیات در اینجا نمایش داده می‌شوند -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal برای تایید حذف نام -->
+    <div class="modal" id="deleteNameModal">
+        <div class="modal-content">
+            <h3 class="modal-title">تایید حذف</h3>
+            <p class="modal-message" id="deleteNameMessage">آیا از حذف این نام مطمئن هستید؟</p>
+            <div class="modal-buttons">
+                <button class="modal-confirm" id="confirmNameDelete">بله، حذف شود</button>
+                <button class="modal-cancel" id="cancelNameDelete">خیر، انصراف</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal برای تایید حذف جزئیات -->
+    <div class="modal" id="deleteDetailModal">
+        <div class="modal-content">
+            <h3 class="modal-title">تایید حذف</h3>
+            <p class="modal-message" id="deleteDetailMessage">آیا از حذف این جزئیات مطمئن هستید؟</p>
+            <div class="modal-buttons">
+                <button class="modal-confirm" id="confirmDetailDelete">بله، حذف شود</button>
+                <button class="modal-cancel" id="cancelDetailDelete">خیر، انصراف</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal برای Import/Export -->
+    <div class="modal" id="dataModal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="dataModalTitle">خروجی گرفتن داده‌ها</h3>
+            <p class="modal-message" id="dataModalMessage">داده‌های زیر را کپی کرده و در جایی ذخیره کنید:</p>
+            <textarea class="modal-textarea" id="dataTextarea" readonly></textarea>
+            <div class="modal-buttons">
+                <button class="modal-copy" id="copyDataBtn">کپی به کلیپ‌بورد</button>
+                <button class="modal-confirm" id="confirmImportBtn" style="display: none;">تایید Import</button>
+                <button class="modal-cancel" id="closeDataModal">بستن</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // دریافت عناصر DOM
+        const mainPage = document.getElementById('mainPage');
+        const detailsPage = document.getElementById('detailsPage');
+        const nameInput = document.getElementById('nameInput');
+        const addBtn = document.getElementById('addBtn');
+        const searchInput = document.getElementById('searchInput');
+        const namesContainer = document.getElementById('namesContainer');
+        const detailsTitle = document.getElementById('detailsTitle');
+        const backBtn = document.getElementById('backBtn');
+        const detailTitle = document.getElementById('detailTitle');
+        const detailContent = document.getElementById('detailContent');
+        const addDetailBtn = document.getElementById('addDetailBtn');
+        const detailsList = document.getElementById('detailsList');
+        
+        // دکمه‌های Import/Export
+        const exportBtn = document.getElementById('exportBtn');
+        const importBtn = document.getElementById('importBtn');
+        
+        // Modalها
+        const deleteNameModal = document.getElementById('deleteNameModal');
+        const deleteNameMessage = document.getElementById('deleteNameMessage');
+        const confirmNameDelete = document.getElementById('confirmNameDelete');
+        const cancelNameDelete = document.getElementById('cancelNameDelete');
+        
+        const deleteDetailModal = document.getElementById('deleteDetailModal');
+        const deleteDetailMessage = document.getElementById('deleteDetailMessage');
+        const confirmDetailDelete = document.getElementById('confirmDetailDelete');
+        const cancelDetailDelete = document.getElementById('cancelDetailDelete');
+        
+        const dataModal = document.getElementById('dataModal');
+        const dataModalTitle = document.getElementById('dataModalTitle');
+        const dataModalMessage = document.getElementById('dataModalMessage');
+        const dataTextarea = document.getElementById('dataTextarea');
+        const copyDataBtn = document.getElementById('copyDataBtn');
+        const confirmImportBtn = document.getElementById('confirmImportBtn');
+        const closeDataModal = document.getElementById('closeDataModal');
+        
+        const toast = document.getElementById('toast');
+        
+        // متغیرهای حالت
+        let names = JSON.parse(localStorage.getItem('names')) || [];
+        let nameToDeleteIndex = -1;
+        let currentNameIndex = -1;
+        let detailToDeleteIndex = -1;
+        let currentFilteredNames = null;
+        let lastSearchTerm = '';
+        let isImportMode = false;
+        
+        // نمایش نام‌ها
+        function displayNames(filteredNames = null) {
+            const namesToDisplay = filteredNames || names;
+            currentFilteredNames = filteredNames;
+            
+            if (namesToDisplay.length === 0) {
+                namesContainer.innerHTML = '<div class="empty-message">هیچ نامی ذخیره شده است</div>';
+                return;
+            }
+            
+            namesContainer.innerHTML = '';
+            
+            namesToDisplay.forEach((nameObj, filteredIndex) => {
+                const nameCard = document.createElement('div');
+                nameCard.className = 'name-card';
+                
+                const originalIndex = names.findIndex(item => item === nameObj);
+                
+                const nameText = document.createElement('div');
+                nameText.className = 'name-text';
+                nameText.textContent = nameObj.name;
+                
+                const cardButtons = document.createElement('div');
+                cardButtons.className = 'card-buttons';
+                
+                const detailsBtn = document.createElement('button');
+                detailsBtn.className = 'details-btn';
+                detailsBtn.textContent = 'جزئیات';
+                detailsBtn.addEventListener('click', () => {
+                    showDetailsPage(originalIndex);
+                });
+                
+                const editBtn = document.createElement('button');
+                editBtn.className = 'edit-btn';
+                editBtn.textContent = 'ویرایش';
+                editBtn.addEventListener('click', () => {
+                    editName(originalIndex, nameCard, nameText);
+                });
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = 'حذف';
+                deleteBtn.addEventListener('click', () => {
+                    showDeleteNameConfirmation(originalIndex, nameObj.name);
+                });
+                
+                cardButtons.appendChild(detailsBtn);
+                cardButtons.appendChild(editBtn);
+                cardButtons.appendChild(deleteBtn);
+                
+                nameCard.appendChild(nameText);
+                nameCard.appendChild(cardButtons);
+                
+                namesContainer.appendChild(nameCard);
+            });
+        }
+        
+        // ویرایش نام
+        function editName(index, nameCard, nameText) {
+            const currentName = names[index].name;
+            
+            const editInput = document.createElement('input');
+            editInput.type = 'text';
+            editInput.className = 'edit-input';
+            editInput.value = currentName;
+            
+            const editButtons = document.createElement('div');
+            editButtons.className = 'edit-buttons';
+            
+            const saveBtn = document.createElement('button');
+            saveBtn.className = 'save-btn';
+            saveBtn.textContent = 'ذخیره';
+            
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'cancel-btn';
+            cancelBtn.textContent = 'لغو';
+            
+            editButtons.appendChild(saveBtn);
+            editButtons.appendChild(cancelBtn);
+            
+            nameCard.innerHTML = '';
+            nameCard.appendChild(editInput);
+            nameCard.appendChild(editButtons);
+            
+            saveBtn.addEventListener('click', () => {
+                const newName = editInput.value.trim();
+                if (newName) {
+                    names[index].name = newName;
+                    localStorage.setItem('names', JSON.stringify(names));
+                    if (currentFilteredNames) {
+                        const searchTerm = searchInput.value.trim().toLowerCase();
+                        const filteredNames = names.filter(nameObj => 
+                            nameObj.name.toLowerCase().includes(searchTerm)
+                        );
+                        displayNames(filteredNames);
+                    } else {
+                        displayNames();
+                    }
+                }
+            });
+            
+            cancelBtn.addEventListener('click', () => {
+                if (currentFilteredNames) {
+                    const searchTerm = searchInput.value.trim().toLowerCase();
+                    const filteredNames = names.filter(nameObj => 
+                        nameObj.name.toLowerCase().includes(searchTerm)
+                    );
+                    displayNames(filteredNames);
+                } else {
+                    displayNames();
+                }
+            });
+        }
+        
+        // نمایش صفحه جزئیات
+        function showDetailsPage(index) {
+            currentNameIndex = index;
+            const nameObj = names[index];
+            detailsTitle.textContent = `جزئیات نام: ${nameObj.name}`;
+            displayDetails();
+            mainPage.style.display = 'none';
+            detailsPage.style.display = 'block';
+        }
+        
+        // نمایش جزئیات
+        function displayDetails() {
+            if (currentNameIndex === -1) return;
+            
+            const nameObj = names[currentNameIndex];
+            
+            if (!nameObj.details || nameObj.details.length === 0) {
+                detailsList.innerHTML = '<div class="empty-message">هیچ جزئیاتی برای این نام ثبت نشده است</div>';
+                return;
+            }
+            
+            detailsList.innerHTML = '';
+            
+            nameObj.details.forEach((detail, index) => {
+                const detailItem = document.createElement('div');
+                detailItem.className = 'detail-item';
+                
+                const detailTitleEl = document.createElement('div');
+                detailTitleEl.className = 'detail-title';
+                detailTitleEl.textContent = detail.title;
+                
+                const detailContentEl = document.createElement('div');
+                detailContentEl.className = 'detail-content';
+                detailContentEl.textContent = detail.content;
+                
+                const detailButtons = document.createElement('div');
+                detailButtons.className = 'detail-buttons';
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.textContent = 'کپی';
+                copyBtn.addEventListener('click', () => {
+                    copyToClipboard(detail.content);
+                });
+                
+                const editBtn = document.createElement('button');
+                editBtn.className = 'detail-edit';
+                editBtn.textContent = 'ویرایش';
+                editBtn.addEventListener('click', () => {
+                    editDetail(index, detailItem, detailTitleEl, detailContentEl);
+                });
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'detail-delete';
+                deleteBtn.textContent = 'حذف';
+                deleteBtn.addEventListener('click', () => {
+                    showDeleteDetailConfirmation(index, detail.title);
+                });
+                
+                detailButtons.appendChild(copyBtn);
+                detailButtons.appendChild(editBtn);
+                detailButtons.appendChild(deleteBtn);
+                
+                detailItem.appendChild(detailTitleEl);
+                detailItem.appendChild(detailContentEl);
+                detailItem.appendChild(detailButtons);
+                
+                detailsList.appendChild(detailItem);
+            });
+        }
+        
+        // ویرایش جزئیات
+        function editDetail(index, detailItem, detailTitleEl, detailContentEl) {
+            const currentDetail = names[currentNameIndex].details[index];
+            
+            const editTitleInput = document.createElement('input');
+            editTitleInput.type = 'text';
+            editTitleInput.className = 'edit-input';
+            editTitleInput.value = currentDetail.title;
+            
+            const editContentInput = document.createElement('textarea');
+            editContentInput.className = 'edit-textarea';
+            editContentInput.value = currentDetail.content;
+            
+            const editButtons = document.createElement('div');
+            editButtons.className = 'edit-buttons';
+            
+            const saveBtn = document.createElement('button');
+            saveBtn.className = 'save-btn';
+            saveBtn.textContent = 'ذخیره';
+            
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'cancel-btn';
+            cancelBtn.textContent = 'لغو';
+            
+            editButtons.appendChild(saveBtn);
+            editButtons.appendChild(cancelBtn);
+            
+            detailItem.innerHTML = '';
+            detailItem.appendChild(editTitleInput);
+            detailItem.appendChild(editContentInput);
+            detailItem.appendChild(editButtons);
+            
+            saveBtn.addEventListener('click', () => {
+                const newTitle = editTitleInput.value.trim();
+                const newContent = editContentInput.value.trim();
+                
+                if (newTitle && newContent) {
+                    names[currentNameIndex].details[index].title = newTitle;
+                    names[currentNameIndex].details[index].content = newContent;
+                    localStorage.setItem('names', JSON.stringify(names));
+                    displayDetails();
+                }
+            });
+            
+            cancelBtn.addEventListener('click', () => {
+                displayDetails();
+            });
+        }
+        
+        // کپی به کلیپ‌بورد
+        function copyToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            textArea.style.opacity = 0;
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        showToast('متن با موفقیت کپی شد!');
+                    }).catch(err => {
+                        fallbackCopyTextToClipboard(text);
+                    });
+                } else {
+                    fallbackCopyTextToClipboard(text);
+                }
+            } catch (err) {
+                console.error('خطا در کپی کردن متن: ', err);
+                showToast('خطا در کپی کردن متن', true);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        // روش جایگزین برای کپی کردن
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast('متن با موفقیت کپی شد!');
+                } else {
+                    showToast('خطا در کپی کردن متن', true);
+                }
+            } catch (err) {
+                console.error('خطا در کپی کردن متن: ', err);
+                showToast('خطا در کپی کردن متن', true);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        // نمایش اعلان
+        function showToast(message, isError = false) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            if (isError) {
+                toast.classList.add('error');
+            } else {
+                toast.classList.remove('error');
+            }
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // بازگشت به صفحه اصلی
+        function backToMainPage() {
+            detailsPage.style.display = 'none';
+            mainPage.style.display = 'block';
+            currentNameIndex = -1;
+            detailTitle.value = '';
+            detailContent.value = '';
+            
+            if (lastSearchTerm) {
+                searchInput.value = lastSearchTerm;
+                const filteredNames = names.filter(nameObj => 
+                    nameObj.name.toLowerCase().includes(lastSearchTerm)
+                );
+                displayNames(filteredNames);
+            } else {
+                displayNames();
+            }
+        }
+        
+        // افزودن جزئیات
+        function addDetail() {
+            const title = detailTitle.value.trim();
+            const content = detailContent.value.trim();
+            
+            if (title === '' || content === '') {
+                return;
+            }
+            
+            if (currentNameIndex === -1) return;
+            
+            if (!names[currentNameIndex].details) {
+                names[currentNameIndex].details = [];
+            }
+            
+            const newDetail = {
+                title,
+                content,
+                date: new Date().toLocaleDateString('fa-IR')
+            };
+            
+            names[currentNameIndex].details.push(newDetail);
+            localStorage.setItem('names', JSON.stringify(names));
+            
+            detailTitle.value = '';
+            detailContent.value = '';
+            
+            displayDetails();
+        }
+        
+        // نمایش modal تایید حذف نام
+        function showDeleteNameConfirmation(index, name) {
+            nameToDeleteIndex = index;
+            deleteNameMessage.textContent = `آیا از حذف نام "${name}" مطمئن هستید؟`;
+            deleteNameModal.style.display = 'flex';
+        }
+        
+        // مخفی کردن modal تایید حذف نام
+        function hideDeleteNameConfirmation() {
+            deleteNameModal.style.display = 'none';
+            nameToDeleteIndex = -1;
+        }
+        
+        // نمایش modal تایید حذف جزئیات
+        function showDeleteDetailConfirmation(index, title) {
+            detailToDeleteIndex = index;
+            deleteDetailMessage.textContent = `آیا از حذف جزئیات "${title}" مطمئن هستید؟`;
+            deleteDetailModal.style.display = 'flex';
+        }
+        
+        // مخفی کردن modal تایید حذف جزئیات
+        function hideDeleteDetailConfirmation() {
+            deleteDetailModal.style.display = 'none';
+            detailToDeleteIndex = -1;
+        }
+        
+        // نمایش modal داده‌ها
+        function showDataModal(isImport = false) {
+            isImportMode = isImport;
+            
+            if (isImport) {
+                dataModalTitle.textContent = 'ورودی دادن داده‌ها';
+                dataModalMessage.textContent = 'داده‌های JSON را در کادر زیر پیست کنید:';
+                dataTextarea.value = '';
+                dataTextarea.readOnly = false;
+                copyDataBtn.style.display = 'none';
+                confirmImportBtn.style.display = 'block';
+            } else {
+                dataModalTitle.textContent = 'خروجی گرفتن داده‌ها';
+                dataModalMessage.textContent = 'داده‌های زیر را کپی کرده و در جایی ذخیره کنید:';
+                dataTextarea.value = JSON.stringify(names, null, 2);
+                dataTextarea.readOnly = true;
+                copyDataBtn.style.display = 'block';
+                confirmImportBtn.style.display = 'none';
+            }
+            
+            dataModal.style.display = 'flex';
+        }
+        
+        // مخفی کردن modal داده‌ها
+        function hideDataModal() {
+            dataModal.style.display = 'none';
+            isImportMode = false;
+        }
+        
+        // حذف نام
+        function deleteName() {
+            if (nameToDeleteIndex >= 0) {
+                names.splice(nameToDeleteIndex, 1);
+                localStorage.setItem('names', JSON.stringify(names));
+                
+                if (currentFilteredNames) {
+                    const searchTerm = searchInput.value.trim().toLowerCase();
+                    const filteredNames = names.filter(nameObj => 
+                        nameObj.name.toLowerCase().includes(searchTerm)
+                    );
+                    displayNames(filteredNames);
+                } else {
+                    displayNames();
+                }
+            }
+            hideDeleteNameConfirmation();
+        }
+        
+        // حذف جزئیات
+        function deleteDetail() {
+            if (currentNameIndex === -1) return;
+            
+            if (detailToDeleteIndex >= 0) {
+                names[currentNameIndex].details.splice(detailToDeleteIndex, 1);
+                localStorage.setItem('names', JSON.stringify(names));
+                displayDetails();
+            }
+            hideDeleteDetailConfirmation();
+        }
+        
+        // افزودن نام جدید
+        function addName() {
+            const name = nameInput.value.trim();
+            
+            if (name === '') {
+                return;
+            }
+            
+            const date = new Date().toLocaleDateString('fa-IR');
+            const newName = { 
+                name, 
+                date,
+                details: []
+            };
+            
+            names.unshift(newName);
+            localStorage.setItem('names', JSON.stringify(names));
+            nameInput.value = '';
+            
+            if (currentFilteredNames) {
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                const filteredNames = names.filter(nameObj => 
+                    nameObj.name.toLowerCase().includes(searchTerm)
+                );
+                displayNames(filteredNames);
+            } else {
+                displayNames();
+            }
+        }
+        
+        // جستجو در نام‌ها
+        function searchNames() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            lastSearchTerm = searchTerm;
+            
+            if (searchTerm === '') {
+                currentFilteredNames = null;
+                displayNames();
+                return;
+            }
+            
+            const filteredNames = names.filter(nameObj => 
+                nameObj.name.toLowerCase().includes(searchTerm)
+            );
+            
+            displayNames(filteredNames);
+        }
+        
+        // Export داده‌ها
+        function exportData() {
+            if (names.length === 0) {
+                showToast('هیچ داده‌ای برای export وجود ندارد!', true);
+                return;
+            }
+            
+            showDataModal(false);
+        }
+        
+        // Import داده‌ها
+        function importData() {
+            showDataModal(true);
+        }
+        
+        // تایید Import
+        function confirmImportData() {
+            try {
+                const importedData = JSON.parse(dataTextarea.value);
+                
+                if (Array.isArray(importedData)) {
+                    names = importedData;
+                    localStorage.setItem('names', JSON.stringify(names));
+                    currentFilteredNames = null;
+                    lastSearchTerm = '';
+                    searchInput.value = '';
+                    displayNames();
+                    showToast('داده‌ها با موفقیت import شدند!');
+                    hideDataModal();
+                } else {
+                    showToast('فرمت داده‌ها نامعتبر است!', true);
+                }
+            } catch (error) {
+                console.error('خطا در خواندن داده‌ها:', error);
+                showToast('خطا در خواندن داده‌ها!', true);
+            }
+        }
+        
+        // کپی داده‌ها به کلیپ‌بورد
+        function copyDataToClipboard() {
+            copyToClipboard(dataTextarea.value);
+        }
+        
+        // افزودن event listeners
+        addBtn.addEventListener('click', addName);
+        nameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addName();
+            }
+        });
+        searchInput.addEventListener('input', searchNames);
+        backBtn.addEventListener('click', backToMainPage);
+        addDetailBtn.addEventListener('click', addDetail);
+        
+        // event listeners برای Import/Export
+        exportBtn.addEventListener('click', exportData);
+        importBtn.addEventListener('click', importData);
+        
+        // event listeners برای modalهای حذف
+        confirmNameDelete.addEventListener('click', deleteName);
+        cancelNameDelete.addEventListener('click', hideDeleteNameConfirmation);
+        
+        confirmDetailDelete.addEventListener('click', deleteDetail);
+        cancelDetailDelete.addEventListener('click', hideDeleteDetailConfirmation);
+        
+        // event listeners برای modal داده‌ها
+        copyDataBtn.addEventListener('click', copyDataToClipboard);
+        confirmImportBtn.addEventListener('click', confirmImportData);
+        closeDataModal.addEventListener('click', hideDataModal);
+        
+        // بستن modal با کلیک خارج از آن
+        deleteNameModal.addEventListener('click', (e) => {
+            if (e.target === deleteNameModal) {
+                hideDeleteNameConfirmation();
+            }
+        });
+        
+        deleteDetailModal.addEventListener('click', (e) => {
+            if (e.target === deleteDetailModal) {
+                hideDeleteDetailConfirmation();
+            }
+        });
+        
+        dataModal.addEventListener('click', (e) => {
+            if (e.target === dataModal) {
+                hideDataModal();
+            }
+        });
+        
+        // نمایش اولیه نام‌ها
+        displayNames();
+    </script>
+</body>
+</html>
